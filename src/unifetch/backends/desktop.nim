@@ -23,10 +23,11 @@ func headers*(uni): HttpHeaders =
 func `headers=`*(uni; headers: HttpHeaders) =
   uni.client.headers = headers
 
-proc newUniClient*(proxy: Proxy = nil; headers = newHttpHeaders()): UniClient =
+proc newUniClient*(useragent = uaMozilla; proxy: Proxy = nil;
+                   headers = newHttpHeaders()): UniClient =
   ## Creates new UniClient object
   new result
-  result.client = newAsyncHttpClient(proxy = proxy, headers = headers)
+  result.client = newAsyncHttpClient(userAgent, proxy = proxy, headers = headers)
 
 proc close*(uni) =
   close uni.client
