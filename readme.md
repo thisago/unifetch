@@ -24,6 +24,15 @@ let
 echo resp.body
 ```
 
+## TODO
+
+- [ ] Unifetch proc
+- [ ] Backends
+  - [-] Desktop
+  - [ ] Javascript
+    - [ ] NodeJS
+    - [ ] Web
+    - [ ] Userscript
 
 ## License
 

@@ -6,6 +6,9 @@ when not defined js:
 elif defined nodejs:
   import unifetch/backends/nodejs
   export nodejs
+elif defined userscript:
+  import unifetch/backends/userscript
+  export userscript
 else:
   import unifetch/backends/web
   export web
