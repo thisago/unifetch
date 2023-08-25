@@ -10,7 +10,7 @@
 
 ## About
 
-The [@myblebot](https://myblebot.t.me) is a inline Telegram bot that provides a MyBible module texts in your chat!
+Unified fetching
 
 ## Usage
 
