@@ -18,10 +18,10 @@ The [@myblebot](https://myblebot.t.me) is a inline Telegram bot that provides a 
 from pkg/unifetch
 
 let
-  uni = newUnifetch()
-  req = await uni.get("https://google.com")
+  uni = newUniClient()
+  resp = await uni.get("https://google.com")
 
-echo req.response
+echo resp.body
 ```
 
 
