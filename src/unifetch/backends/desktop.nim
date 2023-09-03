@@ -32,7 +32,7 @@ proc newUniClient*(useragent = uaMozilla; proxy: Proxy = nil;
 proc close*(uni) =
   close uni.client
 
-proc request(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {.async.} =
+proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {.async.} =
   ## Do the request
   let resp = await uni.client.request(url, httpMethod, body,
                                       multipart = multipart)
