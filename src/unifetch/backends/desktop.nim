@@ -5,8 +5,12 @@ from std/httpclient import newAsyncHttpClient, close, request, AsyncHttpClient,
                             newProxy, code, body
 export httpclient
 
+
 import unifetch/core
 export core except UniClientBase
+
+when unifetchDebugCurl:
+  import unifetch/toCurl
 
 type UniClient* = ref object of UniClientBase
   client: AsyncHttpClient
@@ -34,6 +38,9 @@ proc close*(uni) =
 
 proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {.async.} =
   ## Do the request
+  when unifetchDebugCurl:
+    echo toCurl(uni.headers, url, httpMethod, body)
+
   let resp = await uni.client.request(url, httpMethod, body,
                                       multipart = multipart)
   new result
@@ -43,7 +50,7 @@ proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {
 
 proc get*(uni; url): Future[UniResponse] {.async.} =
   ## Unifetch GET
-  await uni.request(url, HttpMethod.HttpGet,multipart= nil)
+  await uni.request(url, HttpMethod.HttpGet, multipart = nil)
 
 proc post*(uni; url; body; multipart): Future[UniResponse] {.async.} =
   ## Unifetch GET
