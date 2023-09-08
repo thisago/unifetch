@@ -50,8 +50,8 @@ proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {
 
 proc get*(uni; url): Future[UniResponse] {.async.} =
   ## Unifetch GET
-  await uni.request(url, HttpMethod.HttpGet, multipart = nil)
+  result = await uni.request(url, HttpMethod.HttpGet, multipart = nil)
 
 proc post*(uni; url; body; multipart): Future[UniResponse] {.async.} =
   ## Unifetch GET
-  await uni.request(url, HttpMethod.HttpPost, body, multipart)
+  result = await uni.request(url, HttpMethod.HttpPost, body, multipart)

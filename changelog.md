@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.1.3 (2023/09/05)
+
+- Fixed 1.6.4 issue
+
 ## Version 0.1.2 (2023/09/05)
 
 - Added debug option `-d:unifetchDebugCurl` to show curl representation of the request
