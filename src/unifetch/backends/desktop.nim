@@ -13,6 +13,7 @@ when unifetchDebugCurl:
   import unifetch/toCurl
 
 type UniClient* = ref object of UniClientBase
+  ## Non JS Unifetch object
   client: AsyncHttpClient
 
 using
@@ -27,13 +28,14 @@ func headers*(uni): HttpHeaders =
 func `headers=`*(uni; headers: HttpHeaders) =
   uni.client.headers = headers
 
-proc newUniClient*(useragent = uaMozilla; proxy: Proxy = nil;
-                   headers = newHttpHeaders()): UniClient =
+proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
+                   proxy: Proxy = nil): UniClient =
   ## Creates new UniClient object
   new result
   result.client = newAsyncHttpClient(userAgent, proxy = proxy, headers = headers)
 
 proc close*(uni) =
+  ## Closes client
   close uni.client
 
 proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {.async.} =

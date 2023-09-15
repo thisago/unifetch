@@ -1,4 +1,4 @@
-from std/httpcore import HttpHeaders, newHttpHeaders, HttpCode, `$`
+from std/httpcore import HttpHeaders, newHttpHeaders, HttpCode, `$`, is4xx, is5xx
 export httpcore
 
 from std/uri import Uri, parseUri
@@ -14,3 +14,5 @@ type
     headers*: HttpHeaders
     code*: HttpCode
     body*: string
+  UnifetchError* = object of IOError
+    ## Raised when `unifetch.fetch` request wasn't successful

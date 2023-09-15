@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.2.0 (2023/09/14)
+
+- Added `fetch` proc, single call request
+
 ## Version 0.1.3 (2023/09/05)
 
 - Fixed 1.6.4 issue
