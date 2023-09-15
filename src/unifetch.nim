@@ -26,6 +26,7 @@ proc fetch*(
   let
     client = newUniClient(headers = headers, proxy = proxy)
     resp = await client.request(url, httpMethod, body, multipart)
+  close client
   if resp.code.is4xx or resp.code.is5xx:
     result = resp.body
   else:
