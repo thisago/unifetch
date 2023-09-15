@@ -28,9 +28,9 @@ proc fetch*(
     resp = await client.request(url, httpMethod, body, multipart)
   close client
   if resp.code.is4xx or resp.code.is5xx:
-    result = resp.body
-  else:
     raise newException(UnifetchError, $resp.code)
+  else:
+    result = resp.body
 
 when isMainModule:
   let uni = newUniClient(headers = newHttpHeaders({
