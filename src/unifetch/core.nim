@@ -1,4 +1,5 @@
-from std/httpcore import HttpHeaders, newHttpHeaders, HttpCode, `$`, is4xx, is5xx
+from std/httpcore import HttpHeaders, newHttpHeaders, HttpCode, `$`, is4xx, is5xx,
+                          HttpMethod
 export httpcore
 
 from std/uri import Uri, parseUri
@@ -25,7 +26,7 @@ when cacheDir.len > 0:
   import std/asyncdispatch
   from std/os import `/`, existsOrCreateDir, fileExists
   from std/md5 import toMd5, `$`
-  from std/httpcore import HttpHeaders, HttpMethod, `$`
+  from std/httpcore import HttpHeaders, `$`
   from std/json import parseJson, `$`
   from std/jsonutils import toJson, jsonTo
 
