@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.3.0 (2023/09/26)
+
+- Added `unifetch.fetch` persistent caching (for development purposes)
+- Added useragent to directly to client headers to show in curl representation
+- Renamed debug curl representation option to `-d:unifetchShowCurlRepr`
+
 ## Version 0.2.0 (2023/09/14)
 
 - Added `fetch` proc, single call request

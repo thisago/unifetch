@@ -9,7 +9,7 @@ export httpclient
 import unifetch/core
 export core except UniClientBase
 
-when unifetchDebugCurl:
+when showCurlRepr:
   import unifetch/toCurl
 
 type UniClient* = ref object of UniClientBase
@@ -32,7 +32,10 @@ proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
                    proxy: Proxy = nil): UniClient =
   ## Creates new UniClient object
   new result
-  result.client = newAsyncHttpClient(userAgent, proxy = proxy, headers = headers)
+  var newHeaders = headers
+  if not newHeaders.hasKey("user-agent") and userAgent.len > 0:
+    newHeaders["User-Agent"] = userAgent
+  result.client = newAsyncHttpClient(proxy = proxy, headers = newHeaders)
 
 proc close*(uni) =
   ## Closes client
@@ -40,7 +43,7 @@ proc close*(uni) =
 
 proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {.async.} =
   ## Do the request
-  when unifetchDebugCurl:
+  when showCurlRepr:
     echo toCurl(uni.headers, url, httpMethod, body)
 
   let resp = await uni.client.request(url, httpMethod, body,
