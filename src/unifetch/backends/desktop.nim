@@ -46,12 +46,13 @@ proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {
   when showCurlRepr:
     echo toCurl(uni.headers, url, httpMethod, body)
 
-  let resp = await uni.client.request(url, httpMethod, body,
-                                      multipart = multipart)
-  new result
-  result.code = resp.code
-  result.body = await resp.body
-  result.headers = resp.headers
+  result.requestIfNoCache(uni.headers, url, httpMethod, body):
+    let resp = await uni.client.request(url, httpMethod, body,
+                                        multipart = multipart)
+    new result
+    result.code = resp.code
+    result.body = await resp.body
+    result.headers = resp.headers
 
 proc get*(uni; url): Future[UniResponse] {.async.} =
   ## Unifetch GET

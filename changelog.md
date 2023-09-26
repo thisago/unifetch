@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.4.0 (2023/09/26)
+
+- Added fetch cache in any request proc
+
 ## Version 0.3.0 (2023/09/26)
 
 - Added `unifetch.fetch` persistent caching (for development purposes)

@@ -13,31 +13,6 @@ else:
   import unifetch/backends/web
   export web
 
-
-const cacheDir {.strdefine: "unifetchCache".} = ""
-when cacheDir.len > 0:
-  from std/os import `/`, existsOrCreateDir, fileExists
-  from std/md5 import toMd5, `$`
-  from std/httpcore import HttpHeaders
-
-  import unifetch/toCurl
-
-  try:
-    discard existsOrCreateDir cacheDir
-  except OsError:
-    quit "Cannot create Unifetch cache dir: " & cacheDir
-
-  proc reqCacheFile(
-    httpHeaders: HttpHeaders;
-    url: string or Uri;
-    httpMethod: HttpMethod;
-    body = ""
-  ): string {.inline.} =
-    ## Returns the request cache file, where request response is cached
-    let id = $toMd5 toCurl(httpHeaders, url, httpMethod, body)
-    result = cacheDir / id
-
-
 proc fetch*(
   url: string;
   httpMethod = HttpGet;
@@ -50,11 +25,6 @@ proc fetch*(
   ## wasn't 200
   ##
   ## Compile with `-d:unifetchCache=/tmp/unifetchCache`
-  when cacheDir.len > 0:
-    let cache = reqCacheFile(headers, url, httpMethod, body)
-    if cache.fileExists:
-      return readFile cache
-
   let client = newUniClient(headers = headers, proxy = proxy)
   defer: close client
   let resp = await client.request(url, httpMethod, body, multipart)
@@ -62,10 +32,6 @@ proc fetch*(
     raise newException(UnifetchError, $resp.code)
   else:
     result = resp.body
-
-  when cacheDir.len > 0:
-    cache.writeFile result
-
 
 when isMainModule:
   # let uni = newUniClient(headers = newHttpHeaders({
