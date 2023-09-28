@@ -35,8 +35,7 @@ All requests would be saved into specified directory and skip when the parameter
 is exactly the same and cache exists.
 
 In JS-web backend the cache is stored in LocalStorage, every request saves a new
-entry and all entries is listed at `unifetchCache` to allow user edit the cache
-by JS
+entry
 
 ## Usage
 
