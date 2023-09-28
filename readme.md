@@ -26,7 +26,7 @@ Also, Unifetch provides you helpful features for development purposes
 #### Curl representation
 
 If some request isn't worked as expected for some reason, you can enable this
-feature with `-d:unifetchShowCurlRepr`
+feature with `-d:unifetchShowCurlRepr` and analyze the curl request externally!
 
 #### Persistent caching
 
