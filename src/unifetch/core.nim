@@ -72,25 +72,17 @@ else:
     when defined nodejs:
       {.fatal: "Caching not implemented for NodeJS".}
     else:
-      const localStorageConfKey = "unifetchCache"
-      type
-        CacheConfig = object
-          cachedIds: seq[string]
-          cacheDir: string
-
       when defined userscript:
         {.fatal: "Caching not implemented for userscript".}
       else:
         from std/dom import window, getItem, setItem, Storage
-        from std/jsffi import hasOwnProperty
 
-        proc getCacheConf: CacheConfig =
-          try:
-            result = window.localStorage.getItem(localStorageConfKey).`$`.parseJson.jsonTo CacheConfig
-          except:
-            result = CacheConfig(
-              cacheDir: cacheDir
-            )
+        proc setItem(key, value: cstring) =
+          window.localStorage.setItem(key, value)
+        proc hasItem(key: cstring): bool =
+          not window.localStorage.getItem(key).isNil
+        proc getItem(key: cstring): string =
+          $window.localStorage.getItem key
 
   template requestIfNoCache*(
     promiseResolve: proc(resp: UniResponse);
@@ -107,20 +99,14 @@ else:
       when defined nodejs:
         # Caching not implemented for NodeJS
         discard
-      elif defined userscript:
-        # Caching not implemented for userscript
-        discard
       else:
-        var conf = getCacheConf()
         let id = $toMd5 toCurl(httpHeaders, url, httpMethod, body)
-        if id in conf.cachedIds:
-          let cacheData = window.localStorage.getItem(id).`$`.split "\l"
+        if hasItem id:
+          let cacheData = getItem(id).split "\l"
           promiseResolve cacheData[1].parseJson.jsonTo UniResponse
         else:
           proc resolve(resp: UniResponse) {.inject.} =
-            window.localStorage.setItem(id, $url & "\l" & $resp.toJson)
-            conf.cachedIds.add id
-            window.localStorage.setItem(localStorageConfKey, $conf.toJson)
+            setItem(id, $url & "\l" & $resp.toJson)
             promiseResolve resp
           bodyCode
     else:

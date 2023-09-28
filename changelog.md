@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.1 (2023/09/28)
+
+- Removed cache list from LocalStorage for web caching
+
 ## Version 0.7.0 (2023/09/28)
 
 - Added caching for web backend with localStorage!
