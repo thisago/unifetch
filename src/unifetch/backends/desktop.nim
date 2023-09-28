@@ -1,3 +1,6 @@
+when defined js:
+  {.fatal: "This submodule doesn't works with JS backend".}
+
 import std/asyncdispatch
 
 from std/httpclient import newAsyncHttpClient, close, request, AsyncHttpClient,
@@ -53,11 +56,3 @@ proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {
     result.code = resp.code
     result.body = await resp.body
     result.headers = resp.headers
-
-proc get*(uni; url): Future[UniResponse] {.async.} =
-  ## Unifetch GET
-  result = await uni.request(url, HttpMethod.HttpGet, multipart = nil)
-
-proc post*(uni; url; body; multipart): Future[UniResponse] {.async.} =
-  ## Unifetch GET
-  result = await uni.request(url, HttpMethod.HttpPost, body, multipart)

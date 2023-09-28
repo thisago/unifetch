@@ -1,5 +1,9 @@
 ## Unifetch
-import std/asyncdispatch
+when not defined js:
+  import std/asyncdispatch
+else:
+  import std/asyncjs
+
 when not defined js:
   import unifetch/backends/desktop
   export desktop
@@ -12,6 +16,22 @@ elif defined userscript:
 else:
   import unifetch/backends/web
   export web
+
+from std/uri import Uri
+
+using
+  uni: UniClient
+  url: Uri or string
+  body: string
+  multipart: MultipartData
+
+proc get*(uni; url): Future[UniResponse] {.async.} =
+  ## Unifetch GET
+  result = await uni.request(url, HttpMethod.HttpGet, multipart = nil)
+
+proc post*(uni; url; body; multipart): Future[UniResponse] {.async.} =
+  ## Unifetch GET
+  result = await uni.request(url, HttpMethod.HttpPost, body, multipart)
 
 proc fetch*(
   url: string;
