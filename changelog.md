@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.5.0 (2023/09/28)
+
+- Added requested url to cache file
+
+## Version 0.4.1 (2023/09/26)
+
+- Fixed missing import when cache is disabled
+
 ## Version 0.4.0 (2023/09/26)
 
 - Added fetch cache in any request proc

@@ -29,6 +29,7 @@ when cacheDir.len > 0:
   from std/httpcore import HttpHeaders, `$`
   from std/json import parseJson, `$`
   from std/jsonutils import toJson, jsonTo
+  from std/strutils import split
 
   import unifetch/toCurl
 
@@ -52,9 +53,10 @@ template requestIfNoCache*(
       id = $toMd5 toCurl(httpHeaders, url, httpMethod, body)
       path = cacheDir / id
     if path.fileExists:
-      res = path.readFile.parseJson.jsonTo UniResponse
+      let cacheData = path.readFile.split "\l"
+      res = cacheData[1].parseJson.jsonTo UniResponse
     else:
       bodyCode
-      path.writeFile($res.toJson)
+      path.writeFile($url & "\l" & $res.toJson)
   else:
     bodyCode
