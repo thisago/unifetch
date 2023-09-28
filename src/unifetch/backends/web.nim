@@ -49,15 +49,16 @@ proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] =
   ## Do the request
   when showCurlRepr:
     echo toCurl(uni.headers, url, httpMethod, body)
-  let promise = newPromise() do (resolve: proc(resp: UniResponse)):
-    resolve.requestIfNoCache(uni.headers, url, httpMethod, body):
+  let promise = newPromise() do (promiseResolve: proc(resp: UniResponse)):
+    var res: UniResponse
+    promiseResolve.requestIfNoCache(res, uni.headers, url, httpMethod, body):
       var xml = newXMLHttpRequest()
       if xml.isNil:
         raise newException(UnifetchError, "Cannot create an XML HTTP instance.")
         return
       xml.onreadystatechange = proc (e: Event) =
         if xml.readyState == rsDone:
-          var res = new UniResponse
+          new res
           res.code = HttpCode xml.status
           res.body = $xml.responseText
           resolve res

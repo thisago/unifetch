@@ -24,17 +24,20 @@ type
 
 
 const cacheDir {.strdefine: "unifetchCache".} = ""
+when cacheDir.len > 0:
+  # imports for all backends
+  from std/md5 import toMd5, `$`
+  from std/strutils import split
+  from std/json import parseJson, `$`
+  from std/jsonutils import toJson, jsonTo
+
+  import unifetch/toCurl
+
 when not defined js:
   when cacheDir.len > 0:
     import std/asyncdispatch
     from std/os import `/`, existsOrCreateDir, fileExists
-    from std/md5 import toMd5, `$`
     from std/httpcore import HttpHeaders, `$`
-    from std/json import parseJson, `$`
-    from std/jsonutils import toJson, jsonTo
-    from std/strutils import split
-
-    import unifetch/toCurl
 
     try:
       discard existsOrCreateDir cacheDir
@@ -66,10 +69,32 @@ when not defined js:
 else:
   import std/asyncjs
   when cacheDir.len > 0:
-    {.fatal: "JS cache is not implemented yet :(".}
+    when defined nodejs:
+      {.fatal: "Caching not implemented for NodeJS".}
+    else:
+      const localStorageConfKey = "unifetchCache"
+      type
+        CacheConfig = object
+          cachedIds: seq[string]
+          cacheDir: string
+
+      when defined userscript:
+        {.fatal: "Caching not implemented for userscript".}
+      else:
+        from std/dom import window, getItem, setItem, Storage
+        from std/jsffi import hasOwnProperty
+
+        proc getCacheConf: CacheConfig =
+          try:
+            result = window.localStorage.getItem(localStorageConfKey).`$`.parseJson.jsonTo CacheConfig
+          except:
+            result = CacheConfig(
+              cacheDir: cacheDir
+            )
 
   template requestIfNoCache*(
-    resolve: proc(resp: UniResponse);
+    promiseResolve: proc(resp: UniResponse);
+    res: UniResponse;
     httpHeaders: HttpHeaders;
     url: string or Uri;
     httpMethod: HttpMethod;
@@ -79,6 +104,26 @@ else:
     ## Runs `bodyCode` if no cache exists then save it or if cache is disabled
     ## just run
     when cacheDir.len > 0:
-      ## TODO: implement cache in localstorage
+      when defined nodejs:
+        # Caching not implemented for NodeJS
+        discard
+      elif defined userscript:
+        # Caching not implemented for userscript
+        discard
+      else:
+        var conf = getCacheConf()
+        let id = $toMd5 toCurl(httpHeaders, url, httpMethod, body)
+        if id in conf.cachedIds:
+          let cacheData = window.localStorage.getItem(id).`$`.split "\l"
+          promiseResolve cacheData[1].parseJson.jsonTo UniResponse
+        else:
+          proc resolve(resp: UniResponse) {.inject.} =
+            window.localStorage.setItem(id, $url & "\l" & $resp.toJson)
+            conf.cachedIds.add id
+            window.localStorage.setItem(localStorageConfKey, $conf.toJson)
+            promiseResolve resp
+          bodyCode
     else:
+      proc resolve(resp: UniResponse) {.inject.} =
+        promiseResolve resp
       bodyCode

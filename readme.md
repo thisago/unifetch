@@ -34,6 +34,10 @@ You can enable a persistent request caching with `-d:unifetchCache=/tmp/unifetch
 All requests would be saved into specified directory and skip when the parameters
 is exactly the same and cache exists.
 
+In JS-web backend the cache is stored in LocalStorage, every request saves a new
+entry and all entries is listed at `unifetchCache` to allow user edit the cache
+by JS
+
 ## Usage
 
 ```nim
@@ -56,13 +60,11 @@ echo resp.body
 
 ## TODO
 
-- [ ] Backends
-  - [-] Desktop
-  - [ ] Javascript
-    - [ ] NodeJS
-    - [ ] Web
-    - [ ] Userscript
+- [ ] Javascript Backend
+  - [ ] NodeJS
+  - [ ] Userscript
 - [ ] Add tests
+- [ ] Production ready caching (without response parameters or encrypting it) with optional expiration
 
 ## License
 

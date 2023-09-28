@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.0 (2023/09/28)
+
+- Added caching for web backend with localStorage!
+
 ## Version 0.6.0 (2023/09/28)
 
 - Moved `get` and `post` procs to main file to prevent duplication
