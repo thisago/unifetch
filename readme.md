@@ -37,7 +37,7 @@ is exactly the same and cache exists.
 ## Usage
 
 ```nim
-from pkg/unifetch
+import pkg/unifetch
 
 echo fetch "https://example.com"
 ```
@@ -45,7 +45,7 @@ echo fetch "https://example.com"
 or
 
 ```nim
-from pkg/unifetch
+import pkg/unifetch
 
 let
   uni = newUniClient()
