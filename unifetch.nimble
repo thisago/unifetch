@@ -12,4 +12,4 @@ srcDir        = "src"
 requires "nim >= 1.6.4"
 
 when defined js:
-  requires "ajax"
+  requires "ajax", "nodejs"
