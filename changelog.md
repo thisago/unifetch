@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.8.0 (2023/10/13)
+
+- Implemented NodeJS backend
+- Added NodeJS cache
+
 ## Version 0.7.1 (2023/09/28)
 
 - Removed cache list from LocalStorage for web caching

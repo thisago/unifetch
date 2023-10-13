@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.7.1"
+version       = "0.8.0"
 author        = "Thiago Navarro"
 description   = "Multi backend HTTP fetching"
 license       = "MIT"
