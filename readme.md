@@ -4,7 +4,7 @@
 
 #### Multi backend HTTP fetching
 
-**[About](#about) - [Why?](#why) - [Usage](#usage)** - [License](#license)
+**[About](#about) - [Features](#features) - [Why?](#why) - [Usage](#usage)** - [License](#license)
 
 > **Warning**
 > Not all backends are implemented.
@@ -14,6 +14,17 @@
 ## About
 
 Unified fetching
+
+## Features
+
+- Supported backends
+  - [x] C-like
+  - [x] Javascript
+    - [x] Web (async XMLHttpRequest)
+    - [x] NodeJS (std http/https)
+    - [ ] Userscript (GM API)
+- [x] Sharable request caching over backends and others binaries
+- [x] Request Curl representation
 
 ## Why?
 
@@ -60,8 +71,9 @@ echo resp.body
 ## TODO
 
 - [ ] Javascript Backend
-  - [ ] NodeJS
-  - [ ] Userscript
+  <!-- - [ ] Use fetch for web -->
+  - [ ] Userscript (GM API)
+  - [ ] Implement proxy at NodeJS backend
 - [ ] Add tests
 - [ ] Production ready caching (without response parameters or encrypting it) with optional expiration
   - [ ] Optional runtime only cache

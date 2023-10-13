@@ -23,7 +23,7 @@ type
     body*: string
   UnifetchError* = object of IOError
     ## Raised when `unifetch.fetch` request wasn't successful
-
+    
 
 const cacheDir {.strdefine: "unifetchCache".} = ""
 when cacheDir.len > 0:
@@ -31,7 +31,8 @@ when cacheDir.len > 0:
   from std/md5 import toMd5, `$`
   from std/strutils import split
   from std/json import parseJson, `$`
-  from std/jsonutils import toJson, jsonTo
+  # from std/jsonutils import toJson, jsonTo
+  import std/jsonutils
 
   import unifetch/toCurl
 
@@ -72,7 +73,15 @@ else:
   import std/asyncjs
   when cacheDir.len > 0:
     when defined nodejs:
-      {.fatal: "Caching not implemented for NodeJS".}
+      import pkg/nodejs/jsfs
+      from std/os import `/`
+      requireFs()
+
+      try:
+        if not cacheDir.existsSync:
+          mkdirSync cstring cacheDir
+      except OsError:
+        quit "Cannot create Unifetch cache dir: " & cacheDir
     else:
       when defined userscript:
         {.fatal: "Caching not implemented for userscript".}
@@ -99,8 +108,18 @@ else:
     ## just run
     when cacheDir.len > 0:
       when defined nodejs:
-        # Caching not implemented for NodeJS
-        discard
+        let
+          id = $toMd5 toCurl(httpHeaders, url, httpMethod, body)
+          path = cacheDir / id
+        if path.existsSync:
+          let cacheData = path.readFileSync.`$`.split "\l"
+          promiseResolve cacheData[1].parseJson.jsonTo UniResponse
+        else:
+          proc resolve(resp: UniResponse) {.inject.} =
+            echo resp[]
+            path.writeFileSync($url & "\l" & $resp.toJson)
+            promiseResolve resp
+          bodyCode
       else:
         let id = $toMd5 toCurl(httpHeaders, url, httpMethod, body)
         if hasItem id:
