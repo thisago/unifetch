@@ -27,7 +27,7 @@ using
   httpMethod: HttpMethod
 
 proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
-                   proxy: Proxy = nil): UniClient =
+                   proxy: Proxy = nil; insecure = false): UniClient =
   ## Creates new UniClient object
   ##
   ## JS doesn't support proxy...
@@ -39,8 +39,11 @@ proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
   result.proxy = proxy
   result.headers = newHeaders
 
-  if not proxy.isNil:
-    echo "Proxy is ignored at JS backend."
+  when not defined release:
+    if not proxy.isNil:
+      echo "Proxy is ignored at JS backend."
+    if insecure:
+      echo "There's no way to disable SSL verification on browser."
 
 proc close*(uni) =
   ## Just to compatibilize with desktop backend

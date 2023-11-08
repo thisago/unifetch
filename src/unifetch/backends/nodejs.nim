@@ -39,7 +39,7 @@ using
   httpMethod: HttpMethod
 
 proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
-                   proxy: Proxy = nil): UniClient =
+                   proxy: Proxy = nil; insecure = false): UniClient =
   ## Creates new UniClient object
   ##
   ## JS doesn't support proxy...
@@ -50,8 +50,11 @@ proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
   result.proxy = proxy
   result.headers = newHeaders
 
-  if not proxy.isNil:
-    echo "Proxy is currently not implemented at NodeJS backend."
+  when not defined release:
+    if not proxy.isNil:
+      echo "Proxy is currently not implemented at NodeJS backend."
+    if insecure:
+      echo "Disabling SSL verifications is currently not implemented at NodeJS backend."
 
 proc close*(uni) =
   ## Just to compatibilize with desktop backend

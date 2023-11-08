@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.9.0 (2023/11/08)
+
+- Removed JS warns in release mode
+- Added unsafe mode for `desktop`
+
 ## Version 0.8.0 (2023/10/13)
 
 - Implemented NodeJS backend

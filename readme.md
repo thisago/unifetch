@@ -77,6 +77,7 @@ echo resp.body
 - [ ] Add tests
 - [ ] Production ready caching (without response parameters or encrypting it) with optional expiration
   - [ ] Optional runtime only cache
+- [ ] Disable SSL checking option for NodeJS
 
 ## License
 

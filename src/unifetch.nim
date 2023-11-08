@@ -39,13 +39,14 @@ proc fetch*(
   headers = newHttpHeaders();
   body = "";
   multipart: MultipartData = nil;
-  proxy: Proxy = nil
+  proxy: Proxy = nil;
+  insecure = false
 ): Future[string] {.async.} =
   ## Single proc request, returns the body and raises an exception if http code
   ## wasn't 200
   ##
   ## Compile with `-d:unifetchCache=/tmp/unifetchCache`
-  let client = newUniClient(headers = headers, proxy = proxy)
+  let client = newUniClient(headers = headers, proxy = proxy, insecure = insecure)
   defer: close client
   let resp = await client.request(url, httpMethod, body, multipart)
   if resp.code.is4xx or resp.code.is5xx:
@@ -68,7 +69,7 @@ when isMainModule:
   # close uni
   import times
   echo now()
-  echo waitFor fetch "https://httpbin.org/get"
+  echo waitFor fetch("https://localhost", insecure = true)
   echo now()
-  echo waitFor fetch "https://httpbin.org/get"
+  echo waitFor fetch "https://localhost"
   echo now()

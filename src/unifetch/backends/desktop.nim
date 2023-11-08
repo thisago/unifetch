@@ -7,6 +7,8 @@ from std/httpclient import newAsyncHttpClient, close, request, AsyncHttpClient,
                             HttpMethod, MultipartData, HttpMethod, Proxy,
                             newProxy, code, body
 export httpclient
+when defined ssl:
+  from std/net import newContext, SslCVerifyMode
 
 
 import unifetch/core
@@ -32,13 +34,26 @@ func `headers=`*(uni; headers: HttpHeaders) =
   uni.client.headers = headers
 
 proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
-                   proxy: Proxy = nil): UniClient =
+                   proxy: Proxy = nil; insecure = false): UniClient =
   ## Creates new UniClient object
   new result
   var newHeaders = headers
   if not newHeaders.hasKey("user-agent") and userAgent.len > 0:
     newHeaders["User-Agent"] = userAgent
-  result.client = newAsyncHttpClient(proxy = proxy, headers = newHeaders)
+
+  when defined ssl:
+    let sslContext = newContext(
+      verifyMode = if insecure: CVerifyNone else: CVerifyPeer
+    )
+  elif not defined release:
+    const sslContext = nil
+    if unsafe:
+      stderr.writeLine "You aren't using SSL, there's no reason to disable verification."
+  result.client = newAsyncHttpClient(
+    proxy = proxy,
+    headers = newHeaders,
+    sslContext = sslContext
+  )
 
 proc close*(uni) =
   ## Closes client
