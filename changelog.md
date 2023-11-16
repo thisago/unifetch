@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.10.0 (20023/11/16)
+
+- Fixed wrong var name at =desktop.nim=
+- Added ~-k~ at Curl representation when =insecure= was on
+
 ## Version 0.9.0 (2023/11/08)
 
 - Removed JS warns in release mode

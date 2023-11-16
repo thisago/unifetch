@@ -69,7 +69,7 @@ when isMainModule:
   # close uni
   import times
   echo now()
-  echo waitFor fetch("https://localhost", insecure = true)
+  echo waitFor fetch("https://httpbin.org/get", insecure = true)
   echo now()
-  echo waitFor fetch "https://localhost"
+  echo waitFor fetch "https://httpbin.org/get"
   echo now()

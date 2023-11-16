@@ -8,7 +8,8 @@ proc toCurl*(
   httpHeaders: HttpHeaders;
   url: string or Uri;
   httpMethod: HttpMethod;
-  body = ""
+  body = "";
+  insecure = false
 ): string =
   ## Unifetch curl representation
   proc escape(s: string): auto =
@@ -16,8 +17,8 @@ proc toCurl*(
   var headers = collect:
     for (hName, hVal) in httpHeaders.pairs:
       fmt"-H '{escape hName}: {escape hVal}'"
-  result = fmt"curl '{escape $url}' " &
-              (if httpMethod == HttpPost: "-X POST " else: "") &
+  result = fmt"curl '{escape $url}' -X {httpMethod} " &
+              (if insecure: "-k " else: "") &
               headers.join(" ") &
               (if body.len > 0: fmt" --data-raw '{body}'" else: "")
 

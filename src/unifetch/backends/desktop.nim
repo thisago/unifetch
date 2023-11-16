@@ -20,6 +20,7 @@ when showCurlRepr:
 type UniClient* = ref object of UniClientBase
   ## Non JS Unifetch object
   client: AsyncHttpClient
+  insecure: bool
 
 using
   uni: UniClient
@@ -41,13 +42,15 @@ proc newUniClient*(useragent = uaMozilla; headers = newHttpHeaders();
   if not newHeaders.hasKey("user-agent") and userAgent.len > 0:
     newHeaders["User-Agent"] = userAgent
 
+  result.insecure = insecure
+
   when defined ssl:
     let sslContext = newContext(
       verifyMode = if insecure: CVerifyNone else: CVerifyPeer
     )
   elif not defined release:
     const sslContext = nil
-    if unsafe:
+    if insecure:
       stderr.writeLine "You aren't using SSL, there's no reason to disable verification."
   result.client = newAsyncHttpClient(
     proxy = proxy,
@@ -62,7 +65,7 @@ proc close*(uni) =
 proc request*(uni; url; httpMethod; body = ""; multipart): Future[UniResponse] {.async.} =
   ## Do the request
   when showCurlRepr:
-    echo toCurl(uni.headers, url, httpMethod, body)
+    echo toCurl(uni.headers, url, httpMethod, body, uni.insecure)
 
   result.requestIfNoCache(uni.headers, url, httpMethod, body):
     let resp = await uni.client.request(url, httpMethod, body,
